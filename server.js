@@ -1,11 +1,13 @@
 import express from 'express';
 import { DataTypes } from 'sequelize';
 import { Sequelize } from 'sequelize';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 const sequelize = new Sequelize('inventoryDB', 'postgres', 'postgres', {
   host: 'localhost',
@@ -52,11 +54,22 @@ app.get('/inventories', async (req, res) => {
   res.send(JSON.parse(dataJSON));
 });
 
+
 app.post('/inventories', (req, res) => {
 
 });
 
-app.delete('/inventories/:inventoryID', (req, res) => {
+app.delete('/inventories/:inventoryID', async (req, res) => {
+
+  const inventoryID = req.params.inventoryID;
+
+  await Item.destroy({
+    where: {
+      id: inventoryID
+    }
+  });
+
+  res.sendStatus(204);
 
 });
 
