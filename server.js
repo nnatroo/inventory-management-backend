@@ -48,8 +48,6 @@ const Item = sequelize.define('item', {
 // the defined model is the class itself
 console.log(Item === sequelize.models.item);
 
-
-
 app.get('/inventories', async (req, res) => {
   sortOption = req.query.sort;
   sortType = req.query.type;
