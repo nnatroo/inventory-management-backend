@@ -1,8 +1,7 @@
 const express = require('express');
-const { DataTypes } = require('sequelize')
+const { DataTypes, where } = require('sequelize')
 const { Sequelize } = require('sequelize')
 const cors = require('cors')
-
 
 const app = express();
 const port = 3000;
@@ -54,14 +53,30 @@ console.log(Item === sequelize.models.item);
 app.get('/inventories', async (req, res) => {
   sortOption = req.query.sort;
   sortType = req.query.type;
+  placeOption = req.query.place;
 
-  const items = await Item.findAll({
-    order: [[sortOption, sortType]]
-  });
-  console.log(items.every(item => item instanceof Item)); // true
-  const dataJSON = JSON.stringify(items, null, 2);
+  if (placeOption === 'ყველა') {
+    const items = await Item.findAll({
+      order: [[sortOption, sortType]]
+    });
 
-  res.send(JSON.parse(dataJSON));
+    console.log(items.every(item => item instanceof Item)); // true
+    const dataJSON = JSON.stringify(items, null, 2);
+
+    res.send(JSON.parse(dataJSON));
+
+  } else {
+    const items = await Item.findAll({
+      order: [[sortOption, sortType]],
+      where: { place: placeOption }
+    });
+
+    console.log(items.every(item => item instanceof Item)); // true
+    const dataJSON = JSON.stringify(items, null, 2);
+
+    res.send(JSON.parse(dataJSON));
+  }
+
 });
 
 
