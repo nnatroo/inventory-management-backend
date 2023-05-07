@@ -1,7 +1,6 @@
 const pgp = require('pg-promise')();
 const faker = require('faker');
 
-
 const db = pgp({
   user: 'postgres',
   host: 'localhost',
@@ -28,5 +27,5 @@ const generateDummyData = async (rowCount) => {
   }
 };
 
-const rowCount = 5000; 
+const rowCount = 300000; 
 generateDummyData(rowCount);

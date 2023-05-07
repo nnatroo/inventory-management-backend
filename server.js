@@ -1,7 +1,8 @@
-import express from 'express';
-import { DataTypes } from 'sequelize';
-import { Sequelize } from 'sequelize';
-import cors from 'cors';
+const express = require('express');
+const { DataTypes } = require('sequelize')
+const { Sequelize } = require('sequelize')
+const cors = require('cors')
+
 
 const app = express();
 const port = 3000;
@@ -17,12 +18,16 @@ const sequelize = new Sequelize('inventoryDB', 'postgres', 'postgres', {
   }
 });
 
-try {
-  await sequelize.authenticate();
-  console.log('Connection has been established successfully.');
-} catch (error) {
-  console.error('Unable to connect to the database:', error);
+async function connectToDatabase() {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
 }
+
+connectToDatabase();
 
 const Item = sequelize.define('item', {
   id: {
@@ -47,7 +52,12 @@ console.log(Item === sequelize.models.item);
 
 
 app.get('/inventories', async (req, res) => {
-  const items = await Item.findAll();
+  sortOption = req.query.sort;
+  sortType = req.query.type;
+
+  const items = await Item.findAll({
+    order: [[sortOption, sortType]]
+  });
   console.log(items.every(item => item instanceof Item)); // true
   const dataJSON = JSON.stringify(items, null, 2);
 
