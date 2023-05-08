@@ -2,6 +2,7 @@ const express = require('express');
 const { DataTypes, where } = require('sequelize')
 const { Sequelize } = require('sequelize')
 const cors = require('cors')
+const crypto = require('crypto');
 
 const app = express();
 const port = 3000;
@@ -32,7 +33,8 @@ const Item = sequelize.define('item', {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    autoIncrement: true
   },
   name: {
     type: DataTypes.TEXT,
@@ -78,8 +80,11 @@ app.get('/inventories', async (req, res) => {
 });
 
 
-app.post('/inventories', (req, res) => {
+app.post('/inventories', async (req, res) => {
+  const { name, price, place } = req.body;
 
+  const newItem = await Item.create({  name: name, price: price, place: place });
+  res.json({ message: "Item successfully added" })
 });
 
 app.delete('/inventories/:inventoryID', async (req, res) => {
